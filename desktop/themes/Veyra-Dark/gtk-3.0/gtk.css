@@ -1,0 +1,67 @@
+@import url("file:///usr/share/themes/Arc-Dark/gtk-3.0/gtk.css");
+
+@define-color veyra_red #e0242b;
+@define-color veyra_red_dark #b81b21;
+@define-color theme_selected_bg_color #e0242b;
+@define-color theme_selected_fg_color #ffffff;
+@define-color selected_bg_color #e0242b;
+@define-color selected_fg_color #ffffff;
+@define-color link_color #e0242b;
+
+selection,
+*:selected,
+row:selected,
+.view:selected,
+iconview:selected,
+menuitem:hover,
+modelbutton:hover {
+    background-color: @veyra_red;
+    color: #ffffff;
+}
+
+button.suggested-action,
+.suggested-action {
+    background-image: none;
+    background-color: @veyra_red;
+    border-color: @veyra_red_dark;
+    color: #ffffff;
+}
+
+button.suggested-action:hover {
+    background-color: #ef3a41;
+}
+
+button.suggested-action:active {
+    background-color: @veyra_red_dark;
+}
+
+switch:checked,
+progressbar progress,
+scale highlight,
+levelbar block.filled {
+    background-color: @veyra_red;
+    background-image: none;
+    border-color: @veyra_red_dark;
+}
+
+check:checked,
+radio:checked {
+    background-color: @veyra_red;
+    background-image: none;
+    border-color: @veyra_red_dark;
+    color: #ffffff;
+}
+
+entry:focus,
+spinbutton:focus {
+    border-color: @veyra_red;
+}
+
+notebook > header > tabs > tab:checked {
+    box-shadow: inset 0 -2px @veyra_red;
+}
+
+scrollbar slider:hover,
+scrollbar slider:active {
+    background-color: @veyra_red;
+}

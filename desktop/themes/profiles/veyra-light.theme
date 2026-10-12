@@ -1,0 +1,5 @@
+NAME="Veyra Light"
+DESCRIPTION="Light theme with red accents"
+GTK="Veyra-Light"
+ICONS="Papirus"
+WM="Veyra-Light"

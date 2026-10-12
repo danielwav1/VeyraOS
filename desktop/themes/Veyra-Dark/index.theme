@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=Veyra-Dark
+Comment=VeyraOS Dark theme with red accents, built on Arc-Dark
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=Veyra-Dark
+MetacityTheme=Veyra-Dark
+IconTheme=Papirus-Dark

@@ -1,0 +1,2 @@
+[ -r /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
+[ -r /usr/share/veyra/shell/veyra.bashrc ] && . /usr/share/veyra/shell/veyra.bashrc

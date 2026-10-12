@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=Veyra-Light
+Comment=VeyraOS Light theme with red accents, built on Arc
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=Veyra-Light
+MetacityTheme=Veyra-Light
+IconTheme=Papirus

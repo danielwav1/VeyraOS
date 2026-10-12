@@ -1,0 +1,13 @@
+PRETTY_NAME="VeyraOS 0.3 Live"
+NAME="VeyraOS"
+VERSION_ID="0.3"
+VERSION="0.3 (Live Edition)"
+VERSION_CODENAME=trixie
+ID=veyra
+ID_LIKE=debian
+VARIANT="Live"
+VARIANT_ID=live
+HOME_URL="https://veyraos.is-a.dev"
+SUPPORT_URL="https://github.com/danielwav1/VeyraOS/issues"
+BUG_REPORT_URL="https://github.com/danielwav1/VeyraOS/issues"
+LOGO=veyra-logo

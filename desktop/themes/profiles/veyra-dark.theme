@@ -1,0 +1,5 @@
+NAME="Veyra Dark"
+DESCRIPTION="Dark theme with red accents (default)"
+GTK="Veyra-Dark"
+ICONS="Papirus-Dark"
+WM="Veyra-Dark"

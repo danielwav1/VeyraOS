@@ -1,0 +1,32 @@
+name: build-iso
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+jobs:
+  iso:
+    runs-on: ubuntu-latest
+    container:
+      image: debian:trixie
+      options: --privileged
+    steps:
+      - name: Install build tools
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends git ca-certificates live-build debootstrap squashfs-tools xorriso python3 python3-pil python3-numpy file mtools dosfstools
+      - uses: actions/checkout@v4
+      - name: Run tests
+        run: bash tests/run.sh
+      - name: Check package names
+        run: bash scripts/check-packages.sh
+      - name: Build ISO
+        run: VEYRA_MIN_FREE_GB=8 bash build.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: veyraos-iso
+          path: |
+            out/*.iso
+            out/*.sha256
+            out/*.log
