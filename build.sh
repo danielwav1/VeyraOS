@@ -62,8 +62,8 @@ trap 'on_error $LINENO' ERR
 
 LB_ARGS=(
     --distribution "$SUITE"
-    --architectures "$ARCH"
-    --binary-images iso-hybrid
+    --architecture "$ARCH"
+    --binary-image iso-hybrid
     --debian-installer none
     --archive-areas "main non-free-firmware"
     --apt-recommends false
