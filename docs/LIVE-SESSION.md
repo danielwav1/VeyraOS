@@ -5,8 +5,9 @@ VeyraOS 0.3 boots from the ISO into a RAM-backed overlay. Nothing is installed.
 ## Account
 
 - user `veyra`, auto-login to XFCE
-- `sudo` works without a password (live-config default for the live user)
-- live-config documents the default password as `live`; this has not been confirmed on a booted image yet
+- password `veyra1` (set at boot by `veyra-password.service`, which runs after live-config creates the user)
+- `sudo` works without a password
+- the password is public, so don't reuse it anywhere; change it with `passwd` if you like (lost on reboot)
 
 ## What is written, and where
 

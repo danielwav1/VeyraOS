@@ -214,6 +214,7 @@ stage() {
     put "$ROOT/desktop/shell/skel-bashrc" "$inc/etc/skel/.bashrc" 644
     put "$ROOT/desktop/shell/veyra.bashrc" "$inc/usr/share/veyra/shell/veyra.bashrc" 644
     put "$ROOT/desktop/lightdm/50-veyra.conf" "$inc/etc/lightdm/lightdm.conf.d/50-veyra.conf" 644
+    put "$ROOT/desktop/systemd/veyra-password.service" "$inc/etc/systemd/system/veyra-password.service" 644
 
     local variant
     for variant in Dark Light; do

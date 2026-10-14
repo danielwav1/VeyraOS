@@ -45,6 +45,7 @@ for unit in avahi-daemon cups cups-browsed ssh exim4; do
     fi
 done
 
+systemctl enable veyra-password.service
 systemctl set-default graphical.target
 chmod 755 /usr/local/bin/veyra
 chmod -R go-w /etc/skel
@@ -53,7 +54,8 @@ missing=0
 for path in /usr/local/bin/veyra /etc/veyra-release /usr/lib/os-release \
             /usr/share/themes/Arc-Dark/gtk-3.0/gtk.css /usr/share/themes/Veyra-Dark/xfwm4/themerc \
             /usr/share/icons/Papirus-Dark /usr/share/backgrounds/veyra/veyra-default.png \
-            /usr/share/veyra/themes/veyra-dark.theme /etc/lightdm/lightdm.conf.d/50-veyra.conf; do
+            /usr/share/veyra/themes/veyra-dark.theme /etc/lightdm/lightdm.conf.d/50-veyra.conf \
+            /etc/systemd/system/veyra-password.service; do
     if [ ! -e "$path" ]; then
         echo "configure-live: expected $path is missing" >&2
         missing=1

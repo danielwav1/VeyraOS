@@ -63,7 +63,7 @@ VeyraOS is based on Debian 13 "trixie". The kernel, package manager and nearly a
 
 1. Plug the stick into the PC and open the boot menu (usually F12, F10, Esc or F2 right after power-on).
 2. Choose the USB entry. If it doesn't appear, disable Secure Boot.
-3. VeyraOS starts the desktop and logs in as `veyra`.
+3. VeyraOS starts the desktop and logs in as `veyra` (password `veyra1`, needed for admin dialogs).
 
 Black screen? On the boot entry press `e`, add `nomodeset` to the kernel line and boot.
 
@@ -78,6 +78,7 @@ qemu-system-x86_64 -m 3072 -smp 2 -enable-kvm -cdrom VeyraOS-0.3-live-amd64.iso 
 - It is a live session. **Everything you change is lost when you shut down.** Save files to another drive.
 - Internal disks are not touched; mounting one asks for authentication.
 - `sudo` works without a password.
+- Login: user `veyra`, password `veyra1` (public, never reuse it elsewhere). The desktop logs in automatically.
 - The system runs from RAM, so large downloads or upgrades can fill it.
 
 More in [docs/LIVE-SESSION.md](docs/LIVE-SESSION.md).

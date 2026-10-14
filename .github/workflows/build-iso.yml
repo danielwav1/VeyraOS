@@ -25,7 +25,7 @@ jobs:
         continue-on-error: true
         run: bash scripts/check-packages.sh
       - name: Show source version
-        run: git log -1 --oneline && grep -n -e "--architecture" -e "--binary-image" build.sh
+        run: git log -1 --oneline && grep -n -e '--architecture' -e '--binary-image' build.sh
       - name: Build ISO
         run: VEYRA_MIN_FREE_GB=8 bash build.sh
       - name: Upload ISO

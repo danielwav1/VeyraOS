@@ -38,6 +38,12 @@ expect_contains "debian installer disabled" "$(cat "$ROOT/build.sh")" "--debian-
 expect_not_contains "build script never calls a partitioning tool" "$(grep -vE '^\s*#' "$ROOT/build.sh")" "parted"
 expect_not_contains "build script never formats" "$(cat "$ROOT/build.sh")" "mkfs"
 
+unit=$(cat "$ROOT/desktop/systemd/veyra-password.service")
+expect_contains "password unit runs after live-config" "$unit" "After=live-config.service"
+expect_contains "password unit sets the veyra user password" "$unit" "veyra:veyra1"
+expect_contains "hook enables the password unit" "$(cat "$ROOT/scripts/configure-live.sh")" "systemctl enable veyra-password.service"
+expect_contains "build stages the password unit" "$(cat "$ROOT/build.sh")" "veyra-password.service"
+
 lm=$(cat "$ROOT/desktop/lightdm/50-veyra.conf")
 expect_contains "lightdm autologin user is not root" "$lm" "autologin-user=veyra"
 expect_contains "lightdm starts xfce" "$lm" "autologin-session=xfce"
