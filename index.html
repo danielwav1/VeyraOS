@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VeyraOS — Your System. Your Way.</title>
+<meta name="description" content="VeyraOS is an experimental Debian-based live Linux distribution with an XFCE desktop and the veyra command line tool.">
+<meta property="og:title" content="VeyraOS — Your System. Your Way.">
+<meta property="og:description" content="An experimental Debian-based live Linux distribution with an XFCE desktop and the veyra CLI.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23090909'/><path d='M7 8l9 16 9-16' fill='none' stroke='%23E50924' stroke-width='3.5' stroke-linejoin='round'/></svg>">
+<style>
+:root{
+  --bg:#090909; --bg2:#111111; --card:#171717; --border:#303030;
+  --red:#E50924; --red2:#FF334F; --dred:#650A18;
+  --text:#F5F5F5; --muted:#A3A3A3; --ok:#4ADE80; --warn:#FBBF24;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+:root[data-theme="light"]{
+  --bg:#FAFAFA; --bg2:#F0F0F0; --card:#FFFFFF; --border:#D4D4D4;
+  --text:#111111; --muted:#4B4B4B; --red:#C0081E; --red2:#E50924;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;font-size:16px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+a{color:var(--red2)}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--red2);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:var(--red);color:#fff;padding:8px 12px;z-index:100}
+.skip:focus{left:8px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+section{padding:72px 0;position:relative}
+.glow{position:relative}
+.glow::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(229,9,36,.16),transparent 60%);pointer-events:none}
+h1,h2,h3{font-weight:700;letter-spacing:-.02em;line-height:1.15;margin:0 0 12px}
+h1{font-size:clamp(2.4rem,6vw,4.2rem)}
+h2{font-size:clamp(1.7rem,3.5vw,2.4rem)}
+h3{font-size:1.15rem}
+p{margin:0 0 14px;color:var(--muted)}
+code,pre,.mono{font-family:var(--mono)}
+.eyebrow{font-family:var(--mono);color:var(--red2);font-size:.8rem;letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px}
+.lede{font-size:1.1rem;max-width:620px}
+.tag{display:inline-block;border:1px solid var(--border);border-radius:999px;padding:4px 12px;font-size:.85rem;color:var(--muted);margin:4px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-2px);border-color:var(--red)}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:10px;font-weight:600;text-decoration:none;border:1px solid var(--border);color:var(--text);background:transparent;cursor:pointer;font-size:.95rem;font-family:inherit}
+.btn:hover{border-color:var(--red)}
+.btn-primary{background:linear-gradient(135deg,var(--red),var(--dred));border-color:transparent;color:#fff}
+.btn-primary:hover{filter:brightness(1.12);border-color:transparent}
+.btn-sm{padding:7px 12px;font-size:.85rem}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0}
+.badge{font-family:var(--mono);font-size:.78rem;padding:3px 10px;border-radius:6px;border:1px solid var(--border)}
+.b-exp{color:var(--warn);border-color:var(--warn)}
+.b-ok{color:var(--ok);border-color:var(--ok)}
+.b-unk{color:var(--muted)}
+pre{background:#0c0c0c;border:1px solid var(--border);border-radius:12px;padding:16px;overflow-x:auto;color:#eaeaea;margin:12px 0;position:relative;font-size:.9rem}
+:root[data-theme="light"] pre{background:#f4f4f4;color:#111}
+.copy{position:absolute;top:8px;right:8px;background:var(--card);color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:3px 9px;font:inherit;font-size:.75rem;cursor:pointer}
+.copy:hover{color:var(--text);border-color:var(--red)}
+.term{background:#0c0c0c;border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 0 60px rgba(229,9,36,.15)}
+.term-bar{background:#1a1a1a;padding:10px 14px;display:flex;gap:7px;align-items:center}
+.dot{width:11px;height:11px;border-radius:50%}
+.term-body{padding:18px;font-family:var(--mono);font-size:.9rem;color:#ddd;line-height:1.7;margin:0}
+.term-body .r{color:var(--red2)}.term-body .g{color:var(--ok)}.term-body .m{color:var(--muted)}
+.note{font-size:.8rem;color:var(--muted);margin-top:10px}
+.hero{padding:80px 0 56px}
+.hero-grid{display:grid;gap:40px;grid-template-columns:1.1fr .9fr;align-items:center}
+@media(max-width:860px){.hero-grid{grid-template-columns:1fr}}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:36px}
+.warn{border-left:3px solid var(--warn);background:var(--card);padding:14px 18px;border-radius:10px;margin:14px 0}
+.ok{border-left:3px solid var(--ok)}
+table{width:100%;border-collapse:collapse;font-size:.92rem;margin:12px 0}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+th{color:var(--text);font-weight:600}
+td{color:var(--muted)}
+td code{color:var(--text)}
+.table-wrap{overflow-x:auto}
+details{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:600}
+details p{margin:10px 0 0}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0}
+.steps li{counter-increment:s;position:relative;padding:0 0 18px 48px;color:var(--muted)}
+.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+.steps li strong{color:var(--text)}
+header.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding-top:env(safe-area-inset-top,0px)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-weight:800;font-size:1.2rem;letter-spacing:-.02em}
+.logo svg{width:28px;height:28px}
+.ver{font-family:var(--mono);font-size:.7rem;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:2px 6px}
+.nav-links{display:flex;gap:4px;list-style:none;margin:0;padding:0}
+.nav-links a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px;font-size:.92rem}
+.nav-links a:hover{color:var(--text);background:var(--card)}
+.nav-links a.active{color:var(--text);background:var(--card);box-shadow:inset 0 -2px 0 var(--red)}
+.nav-right{display:flex;align-items:center;gap:8px}
+.icon-btn{background:transparent;border:1px solid var(--border);color:var(--text);border-radius:10px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.icon-btn:hover{border-color:var(--red)}
+.icon-btn svg{width:18px;height:18px}
+.menu{position:relative}
+.dropdown{position:absolute;right:0;top:48px;min-width:260px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:8px;display:none;box-shadow:0 20px 40px rgba(0,0,0,.4)}
+.dropdown.open{display:block}
+.dropdown a,.dropdown button{display:block;width:100%;text-align:left;padding:9px 12px;border-radius:8px;color:var(--text);text-decoration:none;background:none;border:0;font:inherit;font-size:.9rem;cursor:pointer}
+.dropdown a:hover,.dropdown button:hover{background:var(--bg2)}
+.dropdown .lbl{font-size:.72rem;color:var(--muted);padding:8px 12px 4px;font-family:var(--mono);text-transform:uppercase}
+.dropdown .seg{display:flex;gap:4px;padding:4px 8px 8px}
+.dropdown .seg button{flex:1;text-align:center;border:1px solid var(--border);border-radius:6px;font-size:.8rem;padding:6px}
+.dropdown .seg button[aria-pressed="true"]{border-color:var(--red);color:var(--red2)}
+.burger{display:none}
+@media(max-width:960px){
+  .nav-links{display:none;position:absolute;top:64px;left:0;right:0;flex-direction:column;background:var(--bg);border-bottom:1px solid var(--border);padding:12px}
+  .nav-links.open{display:flex}
+  .burger{display:flex}
+  .gh-link{display:none}
+}
+.search{position:relative}
+.search input{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:10px 14px;width:100%;font:inherit;font-size:.95rem}
+.search-results{margin-top:12px}
+.search-results a{display:block;padding:10px 12px;border-radius:8px;text-decoration:none;color:var(--text)}
+.search-results a:hover{background:var(--card)}
+.search-results small{color:var(--muted);display:block}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.filters button{background:var(--card);border:1px solid var(--border);color:var(--muted);border-radius:999px;padding:6px 14px;cursor:pointer;font:inherit;font-size:.85rem}
+.filters button[aria-pressed="true"]{border-color:var(--red);color:var(--text)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--card);border:1px solid var(--red);padding:12px 18px;border-radius:10px;opacity:0;transition:.3s;z-index:200;font-size:.92rem}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.totop{position:fixed;right:18px;bottom:18px;opacity:0;pointer-events:none;transition:.2s}
+.totop.show{opacity:1;pointer-events:auto}
+footer{border-top:1px solid var(--border);padding:48px 0 32px;margin-top:40px;background:var(--bg2)}
+.foot-grid{display:grid;gap:28px;grid-template-columns:2fr 1fr 1fr}
+@media(max-width:700px){.foot-grid{grid-template-columns:1fr}}
+footer ul{list-style:none;padding:0;margin:0}
+footer li{margin-bottom:8px}
+footer a{color:var(--muted);text-decoration:none}
+footer a:hover{color:var(--text)}
+.fine{font-size:.8rem;color:var(--muted);margin-top:24px}
+.hidden{display:none!important}
+.anchor-target{scroll-margin-top:80px}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="logo" href="#home" aria-label="VeyraOS home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 7l11 19L27 7" fill="none" stroke="#E50924" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      VeyraOS
+    </a>
+    <span class="ver" id="ver-label">v0.3 · experimental</span>
+
+    <nav aria-label="Main">
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home" data-nav>Home</a></li>
+        <li><a href="#features" data-nav>Features</a></li>
+        <li><a href="#download" data-nav>Download</a></li>
+        <li><a href="#build" data-nav>Build ISO</a></li>
+        <li><a href="#flash" data-nav>Flashing</a></li>
+        <li><a href="#docs" data-nav>Documentation</a></li>
+        <li><a href="#cli" data-nav>CLI</a></li>
+        <li><a href="#troubleshooting" data-nav>Troubleshooting</a></li>
+        <li><a href="#about" data-nav>About</a></li>
+      </ul>
+    </nav>
+
+    <div class="nav-right">
+      <a class="btn btn-primary btn-sm" href="#build">Build ISO</a>
+      <a class="icon-btn gh-link" href="https://github.com/danielwav1/VeyraOS" aria-label="GitHub repository" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.3-1.8-1.3-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/></svg>
+      </a>
+      <div class="menu">
+        <button class="icon-btn" id="menuBtn" aria-haspopup="true" aria-expanded="false" aria-controls="optionsMenu" aria-label="Options">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>
+        </button>
+        <div class="dropdown" id="optionsMenu" role="menu">
+          <a role="menuitem" href="#download">Download Live ISO</a>
+          <a role="menuitem" href="#build">Build from GitHub Actions</a>
+          <a role="menuitem" href="#flash">USB flashing guide</a>
+          <a role="menuitem" href="#vm">Virtual machine guide</a>
+          <a role="menuitem" href="#docs">Documentation</a>
+          <a role="menuitem" href="#troubleshooting">Troubleshooting</a>
+          <a role="menuitem" href="https://github.com/danielwav1/VeyraOS" target="_blank" rel="noopener">GitHub repository</a>
+          <a role="menuitem" href="https://github.com/danielwav1/VeyraOS/releases/latest" target="_blank" rel="noopener">Latest release</a>
+          <div class="lbl">Theme</div>
+          <div class="seg" role="group" aria-label="Theme">
+            <button data-theme-set="system" aria-pressed="false">System</button>
+            <button data-theme-set="dark" aria-pressed="true">Dark</button>
+            <button data-theme-set="light" aria-pressed="false">Light</button>
+          </div>
+        </div>
+      </div>
+      <button class="icon-btn burger" id="burger" aria-expanded="false" aria-controls="navLinks" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- HERO -->
+<section class="hero glow" id="home">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">An independent Linux project</div>
+      <h1>Your System.<br><span style="color:var(--red2)">Your Way.</span></h1>
+      <p class="lede">Meet VeyraOS — an experimental Debian-based live Linux distribution with a dark XFCE desktop and its own command line tool, <code>veyra</code>. Boot it from a USB stick, use it, shut down, and your disks are untouched.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="#download">Explore VeyraOS</a>
+        <a class="btn" href="#build">Build Your ISO</a>
+        <a class="btn" href="https://github.com/danielwav1/VeyraOS" target="_blank" rel="noopener">View on GitHub ↗</a>
+      </div>
+      <div class="chips">
+        <span class="tag">Debian 13 “trixie”</span>
+        <span class="tag">Live ISO</span>
+        <span class="tag">Open development</span>
+        <span class="tag">Experimental</span>
+      </div>
+    </div>
+    <div>
+      <div class="term" role="img" aria-label="Illustrative example of a veyra info terminal session">
+        <div class="term-bar"><span class="dot" style="background:#FF5F57"></span><span class="dot" style="background:#FEBC2E"></span><span class="dot" style="background:#28C840"></span><span class="mono" style="margin-left:10px;color:var(--muted);font-size:.8rem">veyra@veyraos</span></div>
+        <pre class="term-body"><span class="g">$</span> veyra info
+
+Operating System: VeyraOS
+Base:             Debian GNU/Linux
+Edition:          Live
+Status:           <span class="r">Experimental</span></pre>
+      </div>
+      <p class="note">Illustrative example, not captured system output. Run <code>veyra info</code> on a real VeyraOS session to see your own values.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STATUS -->
+<section id="status">
+  <div class="wrap">
+    <div class="eyebrow">Project status</div>
+    <h2>Where things stand</h2>
+    <p class="lede">Figures below come from the repository README and version file. Live build results are not pulled automatically; check the links for current workflow runs.</p>
+    <div class="grid" style="margin-top:28px">
+      <div class="card"><h3>Current version</h3><p class="mono" style="color:var(--text)">0.3 (Live Edition)</p><span class="badge b-exp">Experimental</span></div>
+      <div class="card"><h3>Architecture</h3><p class="mono" style="color:var(--text)">amd64 (x86-64)</p><p class="note">ARM and 32-bit are not supported.</p></div>
+      <div class="card"><h3>Latest release</h3><p>Published releases are listed on GitHub.</p><a href="https://github.com/danielwav1/VeyraOS/releases/latest" target="_blank" rel="noopener">View latest release ↗</a></div>
+      <div class="card"><h3>Latest ISO build</h3><p>Build results are shown on the Actions page.</p><a href="https://github.com/danielwav1/VeyraOS/actions" target="_blank" rel="noopener">Open GitHub Actions ↗</a></div>
+      <div class="card"><h3>Build status</h3><span class="badge b-unk">Status unavailable here</span><p class="note" style="margin-top:10px">This page does not display live build results.</p></div>
+      <div class="card"><h3>Known issues</h3><p>Secure Boot, installer, persistent storage and broad hardware testing are not yet available.</p><a href="https://github.com/danielwav1/VeyraOS/issues" target="_blank" rel="noopener">Browse issues ↗</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="glow">
+  <div class="wrap">
+    <div class="eyebrow">Features</div>
+    <h2>What's in the box</h2>
+    <p class="lede">VeyraOS is experimental. These are the features described in the project documentation.</p>
+    <div class="grid" style="margin-top:28px">
+      <div class="card"><h3>Debian foundation</h3><p>The kernel, package manager and nearly all software come from Debian 13 “trixie”.</p></div>
+      <div class="card"><h3>Live, not installed</h3><p>Runs from USB or a virtual machine, BIOS and UEFI. There is no installer, and nothing is written to your disks.</p></div>
+      <div class="card"><h3>XFCE desktop</h3><p>Veyra-Dark and Veyra-Light themes, red accent, own wallpaper and panel, NetworkManager, PipeWire audio.</p></div>
+      <div class="card"><h3>The <code>veyra</code> CLI</h3><p>System info, checks, updates, logs, network diagnosis, themes and a diagnostic report with personal data masked.</p></div>
+      <div class="card"><h3>Open development</h3><p>Source, issues and pull requests are on GitHub under the MIT license for VeyraOS files.</p></div>
+      <div class="card"><h3>Automated builds</h3><p>A <code>build-iso</code> workflow is available under the Actions tab for building the ISO without a local Debian machine.</p></div>
+      <div class="card"><h3>Checksums</h3><p>Each release provides a <code>.sha256</code> file you can use to verify the ISO.</p></div>
+      <div class="card"><h3>Community testing</h3><p>Hardware compatibility has not been tested broadly. Bug reports and test results are very useful.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD -->
+<section id="download">
+  <div class="wrap">
+    <div class="eyebrow">Download center</div>
+    <h2>Get the Live ISO</h2>
+    <p class="lede">The official download is attached to the latest GitHub Release. The README documents this file for version 0.3:</p>
+    <div class="grid" style="margin-top:24px">
+      <div class="card">
+        <h3>Physical PC (USB)</h3>
+        <p>For a USB stick, 8 GB or larger. Boots on amd64 hardware in BIOS or UEFI mode.</p>
+        <p class="mono" style="color:var(--text);font-size:.85rem">VeyraOS-0.3-live-amd64.iso</p>
+        <a class="btn btn-primary btn-sm" href="https://github.com/danielwav1/VeyraOS/releases/latest" target="_blank" rel="noopener">Open Releases ↗</a>
+      </div>
+      <div class="card">
+        <h3>Virtual machine</h3>
+        <p>The same ISO can be attached to a VM. See the VM guide for the settings used in testing.</p>
+        <p class="mono" style="color:var(--text);font-size:.85rem">VeyraOS-0.3-live-amd64.iso</p>
+        <a class="btn btn-sm" href="#vm">VM guide</a>
+      </div>
+    </div>
+    <h3 style="margin-top:32px">Verify your download</h3>
+    <pre><button class="copy" data-copy="sha256sum -c VeyraOS-0.3-live-amd64.iso.sha256">Copy</button>sha256sum -c VeyraOS-0.3-live-amd64.iso.sha256</pre>
+    <p class="note">Run this in the folder that contains both the ISO and the .sha256 file.</p>
+    <h3 style="margin-top:28px">Build artifacts from GitHub Actions</h3>
+    <p>Generated builds are stored as workflow artifacts. Artifacts can expire, so a published Release is the more permanent source.</p>
+    <ol class="steps">
+      <li>Open the <a href="https://github.com/danielwav1/VeyraOS/actions" target="_blank" rel="noopener">Actions page</a>.</li>
+      <li>Select the <strong>build-iso</strong> workflow.</li>
+      <li>Open a completed run.</li>
+      <li>Under <strong>Artifacts</strong>, download the archive.</li>
+      <li>Extract it and find the <code>.iso</code> file.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- BUILD -->
+<section id="build" class="glow">
+  <div class="wrap">
+    <div class="eyebrow">Build your own ISO</div>
+    <h2>Build center</h2>
+    <p class="lede">Build VeyraOS yourself on a Debian machine, or let GitHub Actions do it for you.</p>
+    <div class="grid" style="margin-top:24px;grid-template-columns:1fr 1fr">
+      <div class="card">
+        <h3>Option A: GitHub Actions</h3>
+        <p>Repository: <code>danielwav1/VeyraOS</code>. Workflow: <strong>build-iso</strong>.</p>
+        <a class="btn btn-primary" href="https://github.com/danielwav1/VeyraOS/actions" target="_blank" rel="noopener">Open GitHub Actions ↗</a>
+        <p class="note">Open the workflow, use <em>Run workflow</em> if it is offered, then download the artifact from the completed run.</p>
+      </div>
+      <div class="card">
+        <h3>Option B: Local build</h3>
+        <p>Requires Debian 13 (or Debian 12 with a newer <code>debootstrap</code>), about 20 GB of free space and <code>sudo</code>.</p>
+        <a class="btn btn-sm" href="https://github.com/danielwav1/VeyraOS/blob/main/docs/BUILD.md" target="_blank" rel="noopener">Read docs/BUILD.md ↗</a>
+      </div>
+    </div>
+    <h3 style="margin-top:32px">Local build commands</h3>
+    <pre><button class="copy" data-copy="sudo apt install live-build debootstrap squashfs-tools xorriso python3 python3-pil python3-numpy file mtools dosfstools git">Copy</button>sudo apt install live-build debootstrap squashfs-tools xorriso python3 python3-pil python3-numpy file mtools dosfstools git</pre>
+    <pre><button class="copy" data-copy="git clone https://github.com/danielwav1/VeyraOS.git && cd VeyraOS && chmod +x build.sh verify-iso.sh scripts/*.sh scripts/veyra tests/*.sh && ./build.sh">Copy</button>git clone https://github.com/danielwav1/VeyraOS.git
+cd VeyraOS
+chmod +x build.sh verify-iso.sh scripts/*.sh scripts/veyra tests/*.sh
+./build.sh</pre>
+    <p class="note">The ISO and its checksum are written to <code>out/</code>.</p>
+    <h3 style="margin-top:28px">Build status</h3>
+    <p>This site does not query GitHub for build results. Check the <a href="https://github.com/danielwav1/VeyraOS/actions" target="_blank" rel="noopener">Actions tab</a> for queued, running, successful, failed or cancelled runs.</p>
+  </div>
+</section>
+
+<!-- FLASH -->
+<section id="flash">
+  <div class="wrap">
+    <div class="eyebrow">Flashing guide</div>
+    <h2>Write the ISO to a USB stick</h2>
+    <div class="warn"><strong>Warning:</strong> flashing erases the whole USB stick. Make sure you select the right drive.</div>
+    <ol class="steps" style="margin-top:20px">
+      <li><strong>Get the ISO.</strong> Download <code>VeyraOS-0.3-live-amd64.iso</code> from Releases, or extract it from a workflow artifact. Optionally verify it with the <code>.sha256</code> file.</li>
+      <li><strong>Prepare a USB stick</strong> of 8 GB or larger.</li>
+      <li><strong>Choose a tool:</strong>
+        <ul>
+          <li><a href="https://etcher.balena.io/" target="_blank" rel="noopener">balenaEtcher</a> works on Windows, macOS and Linux.</li>
+          <li><a href="https://rufus.ie/" target="_blank" rel="noopener">Rufus</a> on Windows. Choose <strong>DD Image mode</strong> when asked.</li>
+          <li><code>dd</code> on Linux or macOS (see below).</li>
+        </ul>
+      </li>
+      <li><strong>Flash:</strong> select the ISO, select the USB stick, double-check the drive, then start.</li>
+      <li><strong>Boot:</strong> restart the PC, open the boot menu (usually F12, F10, Esc or F2), and pick the USB entry. If it does not appear, disable Secure Boot in firmware.</li>
+      <li><strong>Try it:</strong> VeyraOS starts the desktop as the live user. Nothing is installed on your internal drive.</li>
+    </ol>
+    <h3>Linux or macOS with <code>dd</code></h3>
+    <pre><button class="copy" data-copy="lsblk">Copy</button>lsblk
+sudo dd if=VeyraOS-0.3-live-amd64.iso of=/dev/sdX bs=4M status=progress conv=fsync</pre>
+    <p class="note">Replace <code>/dev/sdX</code> with your USB stick. Using the wrong device will destroy its data.</p>
+    <div class="warn ok"><strong>Do not</strong> format or install over your internal drive. Mounting an internal disk inside VeyraOS asks for authentication.</div>
+    <h3 style="margin-top:24px">Boot problems</h3>
+    <details><summary>The USB entry does not appear</summary><p>Secure Boot is not supported in 0.3. Turn it off in firmware settings, then restore it afterward if you need it for other systems.</p></details>
+    <details><summary>Black screen on boot</summary><p>On the boot entry, press <code>e</code>, add <code>nomodeset</code> to the kernel line, then boot.</p></details>
+  </div>
+</section>
+
+<!-- VM -->
+<section id="vm" class="glow">
+  <div class="wrap">
+    <div class="eyebrow">Virtual machines</div>
+    <h2>Try it in a VM</h2>
+    <p class="lede">The README documents this QEMU command as a starting point. Tools such as VirtualBox, VMware and UTM can also boot the ISO; settings for those have not been documented or tested here.</p>
+    <pre><button class="copy" data-copy="qemu-system-x86_64 -m 3072 -smp 2 -enable-kvm -cdrom VeyraOS-0.3-live-amd64.iso -boot d">Copy</button>qemu-system-x86_64 -m 3072 -smp 2 -enable-kvm -cdrom VeyraOS-0.3-live-amd64.iso -boot d</pre>
+    <p class="note">Requires KVM on Linux. 2 GB RAM is the minimum; 4 GB or more is recommended for a smoother desktop.</p>
+    <div class="warn"><strong>Unverified:</strong> VirtualBox, VMware and UTM settings are not covered by the project docs. Test them yourself and report results.</div>
+  </div>
+</section>
+
+<!-- DOCS -->
+<section id="docs">
+  <div class="wrap">
+    <div class="eyebrow">Documentation</div>
+    <h2>Docs hub</h2>
+    <p class="lede">Search the documentation, then open the full files on GitHub.</p>
+    <div class="search" role="search" style="margin:20px 0">
+      <label for="docSearch" class="note">Search docs and commands</label>
+      <input id="docSearch" type="search" placeholder="e.g. secure boot, flash, veyra update" autocomplete="off">
+    </div>
+    <div id="docResults" class="search-results" aria-live="polite"></div>
+    <div class="grid" id="docCards">
+      <div class="card" data-doc="flash"><h3>Live session</h3><p>What persists, what does not, and how the live system works.</p><a href="https://github.com/danielwav1/VeyraOS/blob/main/docs/LIVE-SESSION.md" target="_blank" rel="noopener">docs/LIVE-SESSION.md ↗</a></div>
+      <div class="card" data-doc="build"><h3>Building</h3><p>Local build steps, requirements and output locations.</p><a href="https://github.com/danielwav1/VeyraOS/blob/main/docs/BUILD.md" target="_blank" rel="noopener">docs/BUILD.md ↗</a></div>
+      <div class="card" data-doc="testing"><h3>Testing</h3><p>How to run the test suite.</p><a href="https://github.com/danielwav1/VeyraOS/blob/main/docs/TESTING.md" target="_blank" rel="noopener">docs/TESTING.md ↗</a></div>
+      <div class="card" data-doc="troubleshooting"><h3>Troubleshooting</h3><p>Known problems and workarounds.</p><a href="https://github.com/danielwav1/VeyraOS/blob/main/docs/TROUBLESHOOTING.md" target="_blank" rel="noopener">docs/TROUBLESHOOTING.md ↗</a></div>
+      <div class="card" data-doc="debian"><h3>Debian components</h3><p>Which parts of the system come from Debian.</p><a href="https://github.com/danielwav1/VeyraOS/blob/main/docs/DEBIAN-COMPONENTS.md" target="_blank" rel="noopener">docs/DEBIAN-COMPONENTS.md ↗</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- CLI -->
+<section id="cli" class="glow">
+  <div class="wrap">
+    <div class="eyebrow">CLI reference</div>
+    <h2><code>veyra</code> command reference</h2>
+    <p class="lede">Commands taken from the README. Run <code>veyra help</code> on the system for the full overview.</p>
+    <div class="search" style="margin:20px 0">
+      <label for="cliSearch" class="note">Search commands</label>
+      <input id="cliSearch" type="search" placeholder="Filter commands" autocomplete="off">
+    </div>
+    <div class="filters" role="group" aria-label="Category">
+      <button aria-pressed="true" data-cat="all">All</button>
+      <button aria-pressed="false" data-cat="info">Information</button>
+      <button aria-pressed="false" data-cat="maint">Maintenance</button>
+      <button aria-pressed="false" data-cat="net">Network &amp; logs</button>
+      <button aria-pressed="false" data-cat="cfg">Configuration</button>
+    </div>
+    <div class="table-wrap">
+    <table id="cliTable">
+      <thead><tr><th scope="col">Command</th><th scope="col">What it does</th></tr></thead>
+      <tbody>
+        <tr data-cat="info"><td><code>veyra help</code></td><td>Command overview</td></tr>
+        <tr data-cat="info"><td><code>veyra version [--short]</code></td><td>Version and edition</td></tr>
+        <tr data-cat="info"><td><code>veyra info</code></td><td>System overview</td></tr>
+        <tr data-cat="info"><td><code>veyra sys</code></td><td>Kernel, CPU, memory, swap, uptime, disk</td></tr>
+        <tr data-cat="info"><td><code>veyra checkup</code></td><td>Checks the important system components</td></tr>
+        <tr data-cat="cfg"><td><code>veyra desktop</code></td><td>Desktop session, components, active themes</td></tr>
+        <tr data-cat="maint"><td><code>veyra update</code></td><td>Refresh package lists, upgrade after confirmation</td></tr>
+        <tr data-cat="maint"><td><code>veyra clean</code></td><td>Show and remove package cache and unused packages after confirmation</td></tr>
+        <tr data-cat="maint"><td><code>veyra repair</code></td><td>Read-only diagnostics; fixes only after confirmation</td></tr>
+        <tr data-cat="net"><td><code>veyra logs [errors|boot|kernel|unit NAME] [-n N]</code></td><td>System logs</td></tr>
+        <tr data-cat="net"><td><code>veyra network [--offline]</code></td><td>Interfaces, gateway, DNS and HTTPS check. Contacts deb.debian.org unless <code>--offline</code></td></tr>
+        <tr data-cat="cfg"><td><code>veyra theme [list|current|set NAME]</code></td><td>Switch between <code>veyra-dark</code> and <code>veyra-light</code></td></tr>
+        <tr data-cat="info"><td><code>veyra about</code></td><td>Project information</td></tr>
+        <tr data-cat="net"><td><code>veyra report [-o FILE]</code></td><td>Local diagnostic report with personal data masked; nothing is sent anywhere</td></tr>
+        <tr data-cat="info"><td><code>veyra banner</code></td><td>Startup banner</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="note">Global options: <code>-y/--yes</code> (answers yes in <code>update</code> and <code>clean</code>, never in <code>repair</code>) and <code>--no-color</code>. Exit codes: 0 ok, 1 failure, 2 usage error, 3 missing dependency.</p>
+  </div>
+</section>
+
+<!-- TROUBLESHOOTING -->
+<section id="troubleshooting">
+  <div class="wrap">
+    <div class="eyebrow">Troubleshooting</div>
+    <h2>Common issues</h2>
+    <p class="lede">Items marked <span class="badge b-exp">Documented</span> come from the project README. Others are general Linux advice and are not confirmed VeyraOS bugs.</p>
+    <details><summary>ISO does not boot or the USB entry is missing <span class="badge b-exp">Documented</span></summary><p><strong>Likely cause:</strong> Secure Boot is enabled. <strong>Try:</strong> disable Secure Boot in firmware, then check the boot menu again. Requires BIOS/legacy or UEFI.</p></details>
+    <details><summary>Black screen <span class="badge b-exp">Documented</span></summary><p>Press <code>e</code> on the boot entry, add <code>nomodeset</code> to the kernel line, then boot.</p></details>
+    <details><summary>Virtual machine will not boot <span class="badge b-unk">General advice</span></summary><p>Make sure the ISO is attached as a CD/DVD drive and the VM boots from it. Enable virtualization (VT-x/AMD-V) in firmware if the hypervisor requires it.</p></details>
+    <details><summary>Login fails <span class="badge b-exp">Documented</span></summary><p>The live user is <code>veyra</code>. The desktop logs in automatically. The public live password is documented in the README and is only for this live session.</p></details>
+    <details><summary>Corrupted download or checksum mismatch <span class="badge b-unk">General advice</span></summary><p>Download again and run <code>sha256sum -c</code> with the matching <code>.sha256</code> file. Do not flash an ISO whose checksum does not match.</p></details>
+    <details><summary>USB flashing errors <span class="badge b-unk">General advice</span></summary><p>Use a different USB stick or port, and in Rufus choose DD Image mode. Make sure you selected the correct drive.</p></details>
+    <details><summary>Network problems <span class="badge b-unk">General advice</span></summary><p>Run <code>veyra network</code> (or <code>veyra network --offline</code> to skip the online check). Wi-Fi firmware for common Intel, Realtek and Atheros chips is included.</p></details>
+    <details><summary>Something else went wrong</summary><p>Read the output of <code>veyra report</code> to confirm personal data is masked, then attach it to a bug report.</p>
+      <p><a href="https://github.com/danielwav1/VeyraOS/issues/new" target="_blank" rel="noopener">Report a bug on GitHub ↗</a></p></details>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="glow">
+  <div class="wrap">
+    <div class="eyebrow">About</div>
+    <h2>About VeyraOS</h2>
+    <p class="lede">VeyraOS is a community-driven, experimental Debian-based live Linux distribution. The README describes it as “Made on Mobile” and credits Daniel.veyra as its creator.</p>
+    <div class="grid" style="margin-top:24px">
+      <div class="card"><h3>Purpose</h3><p>A live USB system with a red visual identity and a small CLI for everyday checks.</p></div>
+      <div class="card"><h3>Debian base</h3><p>Built on Debian with the Linux kernel, XFCE, the Arc theme and Papirus icons.</p></div>
+      <div class="card"><h3>Limitations</h3><p>No Secure Boot, installer, persistent storage, ARM support or broad hardware testing in 0.3.</p></div>
+      <div class="card"><h3>Plans</h3><p><em>Planned, not promised:</em> the project's future direction is not described in the README. Follow the repository for updates.</p></div>
+    </div>
+    <p class="note" style="margin-top:20px">AI-assisted development is not described in the repository README, so this site does not make claims about it.</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="https://github.com/danielwav1/VeyraOS" target="_blank" rel="noopener">View Source Code</a>
+      <a class="btn" href="https://github.com/danielwav1/VeyraOS/issues/new" target="_blank" rel="noopener">Report a Bug</a>
+      <a class="btn" href="https://github.com/danielwav1/VeyraOS/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contribute on GitHub</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTRIBUTING -->
+<section id="contribute">
+  <div class="wrap">
+    <div class="eyebrow">Contributing</div>
+    <h2>Help improve VeyraOS</h2>
+    <div class="grid">
+      <div class="card"><h3>Report bugs</h3><p><a href="https://github.com/danielwav1/VeyraOS/issues" target="_blank" rel="noopener">Browse and open issues ↗</a></p></div>
+      <div class="card"><h3>Test ISOs</h3><p>Boot builds on your hardware and report what works.</p></div>
+      <div class="card"><h3>Submit pull requests</h3><p><a href="https://github.com/danielwav1/VeyraOS/pulls" target="_blank" rel="noopener">View pull requests ↗</a></p></div>
+    </div>
+    <p class="note" style="margin-top:16px">Read <a href="https://github.com/danielwav1/VeyraOS/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">CONTRIBUTING.md</a> first. Contributions are reviewed; acceptance is not guaranteed.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="logo" href="#home">VeyraOS</a>
+        <p style="margin-top:10px">An experimental Debian-based live Linux distribution with an XFCE desktop and the <code>veyra</code> CLI.</p>
+      </div>
+      <div>
+        <h3 style="font-size:.95rem">Navigate</h3>
+        <ul><li><a href="#download">Download</a></li><li><a href="#build">Build ISO</a></li><li><a href="#flash">Flashing</a></li><li><a href="#docs">Documentation</a></li><li><a href="#cli">CLI</a></li></ul>
+      </div>
+      <div>
+        <h3 style="font-size:.95rem">Project</h3>
+        <ul>
+          <li><a href="https://github.com/danielwav1/VeyraOS" target="_blank" rel="noopener">GitHub repository</a></li>
+          <li><a href="https://github.com/danielwav1/VeyraOS/issues" target="_blank" rel="noopener">Report a bug</a></li>
+          <li><a href="https://github.com/danielwav1/VeyraOS/releases" target="_blank" rel="noopener">Releases</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="fine">VeyraOS is an independent community project. Debian and other referenced trademarks belong to their respective owners and this project is not endorsed by Debian. © <span id="year"></span> VeyraOS contributors.</p>
+  </div>
+</footer>
+
+<button class="icon-btn totop" id="toTop" aria-label="Back to top">↑</button>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  const $ = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+  const toast = (msg) => {
+    const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+    clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 2200);
+  };
+
+  // Footer year
+  $('#year').textContent = new Date().getFullYear();
+
+  // Theme preference (non-sensitive, stored locally)
+  const media = window.matchMedia('(prefers-color-scheme: light)');
+  function applyTheme(pref){
+    let mode = pref === 'system' ? (media.matches ? 'light' : 'dark') : pref;
+    document.documentElement.setAttribute('data-theme', mode);
+    $$('[data-theme-set]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeSet === pref)));
+  }
+  let pref = 'dark';
+  try { pref = localStorage.getItem('veyra-theme') || 'dark'; } catch(e) {}
+  applyTheme(pref);
+  media.addEventListener?.('change', () => { if (pref === 'system') applyTheme('system'); });
+  $$('[data-theme-set]').forEach(b => b.addEventListener('click', () => {
+    pref = b.dataset.themeSet;
+    try { localStorage.setItem('veyra-theme', pref); } catch(e) {}
+    applyTheme(pref);
+    toast('Theme: ' + pref);
+  }));
+
+  // Options menu
+  const menuBtn = $('#menuBtn'), menu = $('#optionsMenu');
+  const setMenu = (open) => { menu.classList.toggle('open', open); menuBtn.setAttribute('aria-expanded', String(open)); };
+  menuBtn.addEventListener('click', e => { e.stopPropagation(); setMenu(!menu.classList.contains('open')); });
+  document.addEventListener('click', e => { if (!menu.contains(e.target)) setMenu(false); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { setMenu(false); closeNav(); } });
+
+  // Mobile nav
+  const navLinks = $('#navLinks'), burger = $('#burger');
+  const closeNav = () => { navLinks.classList.remove('open'); burger.setAttribute('aria-expanded', 'false'); };
+  burger.addEventListener('click', () => {
+    const open = !navLinks.classList.contains('open');
+    navLinks.classList.toggle('open', open); burger.setAttribute('aria-expanded', String(open));
+  });
+  navLinks.addEventListener('click', e => { if (e.target.tagName === 'A') closeNav(); });
+
+  // Active nav indicator
+  const navAnchors = $$('[data-nav]');
+  const sections = navAnchors.map(a => $(a.getAttribute('href'))).filter(Boolean);
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        navAnchors.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + en.target.id));
+      }
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  sections.forEach(s => io.observe(s));
+
+  // Back to top
+  const toTop = $('#toTop');
+  window.addEventListener('scroll', () => toTop.classList.toggle('show', window.scrollY > 600), { passive: true });
+  toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  // Copy buttons
+  $$('[data-copy]').forEach(b => b.addEventListener('click', async () => {
+    const text = b.dataset.copy;
+    try {
+      await navigator.clipboard.writeText(text);
+      b.textContent = 'Copied'; toast('Command copied to clipboard');
+    } catch (err) {
+      toast('Copy failed. Select the text manually.');
+    }
+    setTimeout(() => b.textContent = 'Copy', 1500);
+  }));
+
+  // CLI filter
+  const cliSearch = $('#cliSearch');
+  let cat = 'all';
+  function filterCli(){
+    const q = cliSearch.value.trim().toLowerCase();
+    $$('#cliTable tbody tr').forEach(tr => {
+      const okCat = cat === 'all' || tr.dataset.cat === cat;
+      const okQ = !q || tr.textContent.toLowerCase().includes(q);
+      tr.classList.toggle('hidden', !(okCat && okQ));
+    });
+  }
+  cliSearch.addEventListener('input', filterCli);
+  $$('.filters button').forEach(b => b.addEventListener('click', () => {
+    cat = b.dataset.cat;
+    $$('.filters button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    filterCli();
+  }));
+
+  // Docs search (searches the cards on this page)
+  const docSearch = $('#docSearch'), docResults = $('#docResults');
+  docSearch.addEventListener('input', () => {
+    const q = docSearch.value.trim().toLowerCase();
+    docResults.innerHTML = '';
+    $$('#docCards .card').forEach(c => c.classList.toggle('hidden', !!q && !c.textContent.toLowerCase().includes(q)));
+    if (!q) return;
+    const hits = $$('#docCards .card:not(.hidden)');
+    docResults.innerHTML = hits.length
+      ? '<p class="note">' + hits.length + ' matching document(s) below.</p>'
+      : '<p class="note">No docs match. Try a shorter term, or browse the <a href="https://github.com/danielwav1/VeyraOS/tree/main/docs" target="_blank" rel="noopener">docs folder</a>.</p>';
+  });
+})();
+</script>
+</body>
+</html>
