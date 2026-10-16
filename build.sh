@@ -76,7 +76,7 @@ LB_ARGS=(
     --iso-publisher "VeyraOS Project; https://veyraos.is-a.dev"
     --iso-volume "VEYRAOS_${VERSION//./_}"
     --image-name "veyraos-${VERSION}-live"
-    --bootappend-live "boot=live components quiet live-config.username=veyra live-config.hostname=veyraos live-config.locales=${LOCALE} live-config.keyboard-layouts=${KEYMAP} live-config.user-default-groups=audio,cdrom,dip,floppy,video,plugdev,netdev,scanner,bluetooth,lpadmin,sudo,adm,systemd-journal"
+    --bootappend-live "boot=live components quiet live-config.username=veyra live-config.hostname=veyraos live-config.locales=${LOCALE} live-config.keyboard-layouts=${KEYMAP} live-config.user-default-groups=audio,cdrom,dip,floppy,video,plugdev,netdev,scanner,bluetooth,lpadmin,sudo,adm,systemd-journal modprobe.blacklist=pnd2_edac"
 )
 
 if [[ -n ${VEYRA_MIRROR:-} ]]; then
